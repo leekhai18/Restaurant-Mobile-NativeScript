@@ -1,0 +1,164 @@
+<GridLayout rows="auto,auto,*,auto" columns="auto">
+
+    <GridLayout row="0" #navStatusBar class="navStatusBar" backgroundColor="#bd2122"
+        verticalAlignment="top" height="40" width="100%" rows="auto" columns="*,auto,auto,auto">
+        <Label col="0" row="0" text="Home" class="status-title"></Label>
+        <Image col="1" row="0" (tap)="onSearchTap()" horizontalAlignment="right"
+            class="status-img" src="~/assets/images/search.png"></Image>
+        <Image col="2" row="0" (tap)="onBellTap()" horizontalAlignment="right"
+            class="status-img" src="~/assets/images/bell.png"></Image>
+        <Image horizontalAlignment="right" stretch="aspectFill" col="3" row="0"
+            class="status-profile" src="~/assets/images/me.jpg"></Image>
+    </GridLayout>
+
+    <GridLayout row="1" #navTab class="navTab" verticalAlignment="top" height="50"
+        width="100%" rows="auto" columns="25,*,*,*" color="#FFFFFF">
+
+        <GridLayout [class]="selectedTabview==0?'tabview.active':'tabview'"
+            (tap)="onPopularTap()" rows="*,auto" columns="auto" col="1" row="0">
+            <Image *ngIf="selectedTabview==0" row="0" class="navIcon" [src]="selectedTabview==0?'~/assets/images/popular.png':''"></Image>
+            <Label [class]="selectedTabview==0?'tabviewText.active':'tabviewText'"
+                row="1" text="POPULAR"></Label>
+        </GridLayout>
+        <GridLayout [class]="selectedTabview==1?'tabview.active':'tabview'"
+            (tap)="onCategoryTap()" rows="*,auto" columns="auto" col="2" row="0"
+            width="34%">
+            <Image *ngIf="selectedTabview == 1" row="0" class="navIcon" [src]="selectedTabview==1?'~/assets/images/category.png':''"></Image>
+            <Label [class]="selectedTabview==1?'tabviewText.active':'tabviewText'"
+                row="1" text="CATEGORY"></Label>
+        </GridLayout>
+        <GridLayout [class]="selectedTabview==2?'tabview.active':'tabview'"
+            (tap)="onPromosTap()" rows="*,auto" columns="auto" col="3" row="0"
+            width="33%">
+            <Image *ngIf="selectedTabview == 2" row="0" class="navIcon" [src]="selectedTabview==2?'~/assets/images/category.png':''"></Image>
+            <Label [class]="selectedTabview==2?'tabviewText.active':'tabviewText'"
+                row="1" text="PROMOS"></Label>
+        </GridLayout>
+    </GridLayout>
+
+    <GridLayout *ngIf="selectedTabview == 0" row="2" width="100%"
+        backgroundColor="white">
+        <ListView #listview [items]="items" separatorColor="transparent">
+            <ng-template let-item="item">
+                <StackLayout class="main">
+                    <StackLayout class="content">
+                        <Image stretch="aspectFill" class="card-img" (tap)="showItem(item.id)"
+                            [src]="item.cover"></Image>
+                        <GridLayout width="100%" columns="auto,*" rows="auto,auto"
+                            class="" verticalAlignment="center">
+                            <Label [text]="categoryIcon(item.category)" row="0"
+                                col="0" rowSpan="2" [backgroundColor]="item.categoryTag"
+                                class="fa category-icon"></Label>
+                            <Label row="0" col="1" class="item-name" textwrap="true"
+                                verticalAlignment="bottom"
+                                horizontalAlignment="left" [text]="item.name"></Label>
+                            <GridLayout row="1" col="1" rows="auto" columns="auto,auto,auto">
+                                <Label row="0" col="0" class="item-category"
+                                    textwrap="true" verticalAlignment="top"
+                                    horizontalAlignment="left" [text]="item.category"></Label>
+                                <Label col="1" row="0" class="fa rating-icon"
+                                    text="&#xf005;"></Label>
+                                <Label col="2" row="0" class="rating-value item-category"
+                                    [text]="item.rating"></Label>
+                            </GridLayout>
+                        </GridLayout>
+                        <StackLayout width="100%" marginTop="5" class="line"></StackLayout>
+
+                        <GridLayout columns="auto,*,auto,auto" rows="auto">
+                            <GridLayout col="0" rows="auto" columns="auto,auto"
+                                (tap)="toggleLike(item)">
+                                <Label col="0" row="0" #like [class]="item.isLike ? 'fa like-icon liked-active' : 'fa like-icon default'"
+                                    [text]="item.isLike ? '&#xf164;':'&#xf087;'"></Label>
+                                <Label col="1" row="0" class="layout" [text]="item.likes"></Label>
+                            </GridLayout>
+                            <StackLayout col="1" orientation="horizontal"
+                                marginLeft="15">
+                                <Label ref="" class="like-icon layout fa"
+                                    text="&#xf0e5;"></Label>
+                                <Label class="layout" [text]="item.comments"></Label>
+                            </StackLayout>
+                            <GridLayout col="2" rows="auto" columns="auto,auto"
+                                (tap)="toggleHeart(item)" marginRight="15">
+                                <Label col="0" row="0" #favorite [class]="item.isFavorite ? 'like-icon fa heart-active' : 'like-icon fa default'"
+                                    [text]="item.isFavorite ? '&#xf004;':'&#xf08a;'"></Label>
+                                <Label col="1" row="0" class="layout" text="Favorite"></Label>
+                            </GridLayout>
+                            <StackLayout col="3" orientation="horizontal">
+                                <Label ref="" class="like-icon layout fa"
+                                    text="&#xf045;"></Label>
+                                <Label class="layout" text="Share"></Label>
+                            </StackLayout>
+
+                        </GridLayout>
+                    </StackLayout>
+
+                    <StackLayout width="100%" class="lineBreak"></StackLayout>
+
+                </StackLayout>
+            </ng-template>
+        </ListView>
+    </GridLayout>
+
+    <GridLayout *ngIf="selectedTabview == 1" row="2" width="100%"
+        backgroundColor="white">
+        <ListView #categoryListview [items]="categories" separatorColor="transparent">
+            <ng-template let-item="item">                
+                <GridLayout rows="*" columns="*">
+                    <Image height="150" width="100%" marginBottom="10"
+                        stretch="aspectFill" [src]="item.cover"></Image>
+                    <GridLayout verticalAlignment="bottom">
+                        <StackLayout class="banner2" backgroundColor="#489e9e9e">
+                            <Label [text]="item.category + ' (' +  item.count  +  ')'"
+                                class="category-name  m-b-10 m-t-10" textwrap="true"></Label>
+                        </StackLayout>
+                    </GridLayout>
+                </GridLayout>
+            </ng-template>
+        </ListView>
+    </GridLayout>
+
+    <GridLayout *ngIf="selectedTabview == 2" row="2" width="100%"
+        backgroundColor="white">
+    </GridLayout>
+
+
+
+
+    <GridLayout class="navBottom" height="50" width="100%" row="3" rows="auto"
+        columns="auto,auto,auto,auto">
+
+        <GridLayout [class]="selectedTab==0?'nav active':'nav'" (tap)="onHomeTap()"
+            rows="*,auto" cols="auto" col="0" row="0" width="25%">
+            <Image [class]="selectedTab==0?'navIcon active':'navIcon'" row="0"
+                [src]="selectedTab==0?'~/assets/images/navhomem.png':'~/assets/images/navhome.png'"></Image>
+            <Label row="1" *ngIf="selectedTab==0" text="Home" class="navText"></Label>
+        </GridLayout>
+
+        <GridLayout [class]="selectedTab==1?'nav active':'nav'" (tap)="onCartTap()"
+            rows="*,auto" cols="auto" col="1" row="0" width="25%">
+            <Image [class]="selectedTab==1?'navIcon ':'navIcon'" row="0"
+                [src]="selectedTab==1?'~/assets/images/navcartm.png':'~/assets/images/navcart.png'"></Image>
+            <Label row="1" *ngIf="selectedTab == 1" text="Cart" class="navText"></Label>
+        </GridLayout>
+
+        <GridLayout [class]="selectedTab==2?'nav active':'nav'" (tap)="onHistoryTap()"
+            rows="*,auto" cols="auto" col="2" row="0" width="25%">
+            <Image [class]="selectedTab==2?'navIcon active':'navIcon'" row="0"
+                [src]="selectedTab==2?'~/assets/images/navordersm.png':'~/assets/images/navorders.png'"></Image>
+            <Label row="1" *ngIf="selectedTab == 2" text="History" class="navText"></Label>
+        </GridLayout>
+
+        <GridLayout [class]="selectedTab==3?'nav active':'nav'" (tap)="onAboutTap()"
+            rows="*,auto" cols="auto" col="3" row="0" width="25%">
+
+            <Image [class]="selectedTab==3?'navIcon active':'navIcon'" row="0"
+                [src]="selectedTab==3?'~/assets/images/navusm.png':'~/assets/images/navus.png'"></Image>
+            <Label row="1" *ngIf="selectedTab == 3" text="About" class="navText"></Label>
+        </GridLayout>
+    </GridLayout>
+
+
+
+
+
+</GridLayout>
